@@ -10,7 +10,7 @@ from forms import InputForm
 app = Flask(__name__)
 app.config["SECRET_KEY"] = "secret_key"
 
-model = joblib.load("E:/Flasks/flask-course-master/Flask Course Project/model.joblib")
+model = joblib.load("model.joblib")
 
 @app.route("/")
 @app.route("/home")
