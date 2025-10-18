@@ -1,9 +1,3 @@
-# Flask Machine Learning Project
-
-## Overview
-
-This repository contains the materials and code for Session 8 of the Flask Course, which focuses on deploying machine learning models using Flask. In this session, we developed a project to predict flight prices. The session covered interpreting learning curves, evaluating and selecting models, creating a web application with Flask, and deploying the app using Render.
-
 ## Project Details
 
 ### Learning Curves and Model Evaluation
