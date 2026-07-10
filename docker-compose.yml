@@ -1,0 +1,54 @@
+version: '3.8'
+
+services:
+  # Database Service
+  db:
+    image: postgres:15-alpine
+    container_name: production_postgres
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: flight_monitoring
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  # FastAPI Inference Backend
+  serving_api:
+    build:
+      context: ./src_serving
+      dockerfile: Dockerfile
+    container_name: production_serving_api
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=postgresql://user:password@db:5432/flight_monitoring
+      - MODEL_PATH=/app/model.joblib
+    volumes:
+      - ./:/app  # Mounts root so the container can access model.joblib directly
+    depends_on:
+      - db
+
+  # Prometheus Telemetry Collector
+  prometheus:
+    image: prom/prometheus:v2.45.0
+    container_name: production_prometheus
+    volumes:
+      - ./config/prometheus.yml:/etc/prometheus/prometheus.yml
+    ports:
+      - "9090:9090"
+    depends_on:
+      - serving_api
+
+  # Grafana Visualization Dashboard
+  grafana:
+    image: grafana/grafana:10.0.0
+    container_name: production_grafana
+    ports:
+      - "3000:3000"
+    depends_on:
+      - prometheus
+
+volumes:
+  postgres_data:
